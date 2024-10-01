@@ -77,7 +77,7 @@ cd ..
 sh docker_auth_build_push.sh
 ```
 
-- Deploy the remaining resources (:hourglass: *~5-10 minutes*)
+- Deploy the remaining resources (⌛ *~5-10 minutes*)
 
 ```sh
 cd terraform
@@ -88,7 +88,7 @@ terraform apply "tfplan"
 
 ### Test
 
-- Once the `terraform` deployment is complete, fetch your load balancer DNS name and run a curl command against it
+- Once the `terraform` deployment is complete, fetch your load balancer DNS name and run a `curl` command against it
 
 ```sh
 $ aws elbv2 describe-load-balancers --names app-alb --query 'LoadBalancers[0].DNSName' --region <AWS_REGION> --output text
