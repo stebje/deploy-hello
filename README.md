@@ -130,4 +130,10 @@ cd terraform
 terraform import aws_iam_role.ecs_execution_role ecs-execution-role2
 ```
 
-- Ensure that the role has the appropriate policies attached before importing it
+- Secrets that are *scheduled* for deletion but not yet deleted will interfer with the provisioning of a new secret with the same name. If an error message relates to this during `terraform apply ...` then the secrets can be manually deleted before re-running `terraform plan ...` and `terraform apply ...`
+
+```sh
+$ aws secretsmanager list-secrets --region <AWS_REGION> --include-planned-deletion
+
+$ aws secretsmanager delete-secret --secret-id <SECRET_NAME> --region us-west-2 --force-delete-without-recovery
+```
