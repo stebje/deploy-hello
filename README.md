@@ -13,7 +13,7 @@ The source code is deployed using Docker to Elastic Container Registry, and run 
 - [AWS CLI](https://aws.amazon.com/cli/)
 
 ```sh
-$ terraform version && docker version && aws --version
+$ docker version && terraform version && aws --version
 
 Terraform v1.9.6
 (...)
@@ -49,6 +49,7 @@ aws configure
 
 > [!TIP]
 > You can get your AWS account ID using the AWS CLI:
+> 
 > `aws sts get-caller-identity --query "Account" --output text`
 
 ```env
@@ -60,35 +61,47 @@ DB_REPO_NAME=backend-service-repo2
 
 ### Deployment
 
+- Ensure that the `API_REPO_NAME` and `DB_REPO_NAME` match the names configured in `terraform/ecr.tf`
+- Create the ECR repositories
 
+```sh
+cd terraform
+terraform init
+terraform apply -target=aws_ecr_repository.api_service_repo -target=aws_ecr_repository.backend_service_repo
+```
+
+- Authenticate Docker with ECR and build/push the container images
+
+```sh
+cd ..
+sh docker_auth_build_push.sh
+```
+
+- Deploy the remaining resources (:hourglass: *~5-10 minutes*)
+
+```sh
+cd terraform
+terraform init
+terraform plan -out=tfplan
+terraform apply "tfplan"
+```
 
 ### Test
 
-## Structure
+- Once the `terraform` deployment is complete, fetch your load balancer DNS name and run a curl command against it
 
-```
-.
-├── README.md
-├── docker_auth_build_push.sh
-├── api_service
-│   ├── Dockerfile
-│   ├── app.py
-│   └── requirements.txt
-├── backend_service
-│   ├── Dockerfile
-│   ├── app.py
-│   └── requirements.txt
-└── terraform
-    ├── ecr.tf
-    ├── main.tf
-    ├── tfplan
-    └── variables.tf
+```sh
+$ aws elbv2 describe-load-balancers --names app-alb --query 'LoadBalancers[0].DNSName' --region <AWS_REGION> --output text
+
+curl http://<YOUT_LB_DNS>/messages/greeting
 ```
 
-## Examples
+- Example
 
-...
+```sh
+$ aws elbv2 describe-load-balancers --names app-alb --query 'LoadBalancers[0].DNSName' --region us-west-1 --output text
+app-alb-1546875458.us-west-1.elb.amazonaws.com
 
-## Troubleshooting
-
-...
+$ curl http://app-alb-1546875458.us-west-1.elb.amazonaws.com/messages/greeting
+{"message":"Hello World"}
+```
