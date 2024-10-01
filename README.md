@@ -94,7 +94,7 @@ terraform apply "tfplan"
 ```sh
 $ aws elbv2 describe-load-balancers --names app-alb --query 'LoadBalancers[0].DNSName' --region <AWS_REGION> --output text
 
-curl http://<YOUT_LB_DNS>/messages/greeting
+$ curl http://<YOUT_LB_DNS>/messages/greeting
 ```
 
 - Example
@@ -106,3 +106,28 @@ app-alb-1546875458.us-west-1.elb.amazonaws.com
 $ curl http://app-alb-1546875458.us-west-1.elb.amazonaws.com/messages/greeting
 {"message":"Hello World"}
 ```
+
+> [!NOTE]
+> Be aware that some resources such as the ECR tasks might take some time to spin up and register. If the test does not succeed directly after provisioning the resources then try again in a few mintues.
+
+### Deprovison resources
+
+- Once test is completed you can deprovision the AWS resources
+
+```sh
+terraform destroy
+```
+
+- Input `yes` when prompted and ensure that the deprovisioning is successful to avoid any unnecessary cost
+
+### Troubleshooting
+
+- The `terraform` provisions CloudWatch log groups that can be used to inspect the logs from the API service and the backend/database service
+- Some resources exist in a global namespace such as IAM roles. If you encounter errors relating to the IAM role already existing then you can import the role with terraform before re-running `terraform plan ...` and `terraform apply ...`. Example:
+
+```sh
+cd terraform
+terraform import aws_iam_role.ecs_execution_role ecs-execution-role2
+```
+
+- Ensure that the role has the appropriate policies attached before importing it
