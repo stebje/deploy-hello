@@ -12,6 +12,8 @@ set -e
 echo "--- Environment Variables ---"
 echo "AWS Account ID: $AWS_ACCOUNT_ID"
 echo "AWS Region: $AWS_REGION"
+echo "ECR repo name - database: $DB_REPO_NAME"
+echo "ECR repo name - api: $API_REPO_NAME"
 echo "---"
 echo ""
 
@@ -20,8 +22,6 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "DIR: $DIR"
 
 # Some convenience vars to reuse
-DB_REPO_NAME="backend-service-repo2"
-API_REPO_NAME="api-service-repo2"
 ECR_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 DB_REPO="$ECR_URL/$DB_REPO_NAME"
 API_REPO="$ECR_URL/$API_REPO_NAME"
