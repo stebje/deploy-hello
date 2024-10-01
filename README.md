@@ -45,7 +45,8 @@ aws configure
 
 - Rename `.env.sample` --> `.env`
 - Update `.env` with your AWS account ID, preferred AWS region, and the names of your ECR repos
-    - :warning: The ECR repo names must match what is configured in `terraform/ecr.tf`
+    - :warning: The AWS region in `.env` must match what is configured in `terraform/variables.tf`
+    - :warning: The ECR repo names in `.env` must match what is configured in `terraform/ecr.tf`
 
 > [!TIP]
 > You can get your AWS account ID using the AWS CLI:
