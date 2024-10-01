@@ -37,5 +37,5 @@ docker push $DB_REPO:latest
 
 cd "$DIR"/api_service
 docker build --no-cache -t api-service . || { echo "API service build failed"; exit 1; }
-docker tag api-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$DB_REPO_NAME:latest
+docker tag api-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$API_REPO_NAME:latest
 docker push $API_REPO:latest
